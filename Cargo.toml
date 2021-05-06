@@ -1,5 +1,5 @@
 [package]
-name = "minimax"
+name = "minimax-alpha-beta"
 version = "0.1.0"
 authors = ["Aalekh Patel <aalekh.gwpeck.7998@icloud.com>"]
 edition = "2018"
