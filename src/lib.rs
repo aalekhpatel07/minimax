@@ -3,7 +3,6 @@
 //! Also, where possible, a parallel processing
 //! implementation is provided.
 
-
 /// Contains sruct and necessary implementations
 /// for `TicTacToe`: a popular two-player game
 /// where one player places a symbol - 'X' and another
@@ -61,7 +60,9 @@ pub mod tictactoe {
 
         pub fn check_diagonals(&self) -> char {
             let mut winner = self.default_char;
-            if self.check_diagonal(self.maximizer, true) || self.check_diagonal(self.maximizer, false) {
+            if self.check_diagonal(self.maximizer, true)
+                || self.check_diagonal(self.maximizer, false)
+            {
                 winner = self.maximizer
             } else if self.check_diagonal(self.minimizer, true)
                 || self.check_diagonal(self.minimizer, false)
@@ -129,7 +130,8 @@ pub mod tictactoe {
                 true
             } else {
                 for idx in 0..self.size as usize {
-                    if self.board[(self.size as usize * (self.size as usize - 1 - idx as usize)) + idx]
+                    if self.board
+                        [(self.size as usize * (self.size as usize - 1 - idx as usize)) + idx]
                         != ch
                     {
                         return false;
@@ -164,8 +166,19 @@ pub mod strategy {
     }
 
     pub trait AlphaBetaMiniMaxStrategy: Strategy {
-        fn get_best_move(&mut self, max_depth: i64, is_maximizing: bool) -> <Self as Strategy>::Move;
-        fn minimax_score(&mut self, depth: i64, is_maximizing: bool, alpha: f64, beta: f64, max_depth: i64) -> f64;
+        fn get_best_move(
+            &mut self,
+            max_depth: i64,
+            is_maximizing: bool,
+        ) -> <Self as Strategy>::Move;
+        fn minimax_score(
+            &mut self,
+            depth: i64,
+            is_maximizing: bool,
+            alpha: f64,
+            beta: f64,
+            max_depth: i64,
+        ) -> f64;
     }
 }
 
@@ -173,7 +186,6 @@ pub mod body {
 
     use crate::strategy::*;
     use crate::tictactoe::*;
-
 
     impl Strategy for TicTacToe {
         type Player = char;
@@ -254,15 +266,15 @@ pub mod body {
         }
     }
 
-
-
-
-
     pub const INF: f64 = f64::INFINITY;
     pub const NEG_INF: f64 = f64::NEG_INFINITY;
 
     impl<T: Strategy> AlphaBetaMiniMaxStrategy for T {
-        fn get_best_move(&mut self, max_depth: i64, is_maximizing: bool) -> <Self as Strategy>::Move {
+        fn get_best_move(
+            &mut self,
+            max_depth: i64,
+            is_maximizing: bool,
+        ) -> <Self as Strategy>::Move {
             let mut best_move: <Self as Strategy>::Move = self.get_a_sentinel_move();
 
             if self.is_game_complete() {
@@ -310,7 +322,6 @@ pub mod body {
             mut beta: f64,
             max_depth: i64,
         ) -> f64 {
-
             let avail: Vec<<T as Strategy>::Move> = self.get_available_moves();
             if depth == 0 || self.is_game_complete() || avail.is_empty() {
                 return self.evaluate();
