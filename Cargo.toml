@@ -9,7 +9,7 @@ homepage = "https://www.github.com/aalekhpatel07/minimax"
 documentation = "https://www.github.com/aalekhpatel07/minimax"
 repository = "https://www.github.com/aalekhpatel07/minimax.git"
 readme = "README.md"
-keywords = ["game", "Game AI", "Minimax", "Alpha-Beta pruning", "efficient minimax", "Artificial Intelligence"]
+keywords = ["game", "game-ai", "Minimax", "alpha-beta-pruning", "efficient-minimax"]
 categories = ["algorithms", "mathematics"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
