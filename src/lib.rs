@@ -3,7 +3,6 @@
 //! Also, where possible, a parallel processing
 //! implementation is provided.
 
-pub mod drivers;
 /// Contains sruct and necessary implementations
 /// for `TicTacToe`: a popular two-player game
 /// where one player places a symbol - 'X' and another
@@ -434,6 +433,91 @@ pub mod games {
                 }
                 value
             }
+        }
+    }
+}
+
+/// Contains simple drivers for some
+/// of the games supported by the Minimax
+/// engine.
+pub mod drivers {
+
+    use crate::strategy::*;
+    use crate::tictactoe::*;
+
+    /// Read input.
+    pub fn get_input() -> String {
+        let mut buffer = String::new();
+        std::io::stdin().read_line(&mut buffer).expect("Failed");
+        buffer
+    }
+
+    /// Play a game of any size in a REPL against the engine.
+    /// The default depth of 6 should make the
+    /// engine reasonably fast.
+    pub fn play_tic_tac_toe_against_computer(size: usize) {
+        play_tic_tac_toe_against_computer_with_depth(size, 6)
+    }
+
+    /// Play a game of any size in a REPL against the engine.
+    /// The higher the depth, the longer it takes and
+    /// the more accurately the engine performs.
+    pub fn play_tic_tac_toe_against_computer_with_depth(size: usize, depth: i64) {
+        let mut ttt = TicTacToe::create_game(size, None, None, None);
+        loop {
+            println!("Board:\n");
+            ttt.print_board();
+            println!("\n");
+
+            if ttt.is_game_complete() {
+                println!("Game is complete.");
+                if ttt.is_game_tied() {
+                    println!("Game Tied!");
+                    break;
+                } else {
+                    println!("{} wins!", ttt.get_winner());
+                    break;
+                }
+            }
+
+            let example_num: i64 = 7;
+            println!(
+                "Enter a move. (e.g. '{}' represents (row: {}, col: {}) : ",
+                example_num,
+                example_num as usize / size,
+                example_num as usize % size
+            );
+            let s = get_input().trim().parse::<usize>();
+            let n = s.unwrap_or(usize::MAX);
+
+            if n == usize::MAX {
+                break;
+            }
+            println!(
+                "Move played by you: {} (i.e. {}, {})",
+                n,
+                n / size,
+                n % size
+            );
+            ttt.play(&n, true);
+            let move_found = ttt.get_best_move(depth as i64, true);
+            if move_found > (ttt.size * ttt.size) {
+                println!("Game is complete.");
+                if ttt.is_game_tied() {
+                    println!("Game Tied!");
+                    break;
+                } else {
+                    println!("{} wins!", ttt.get_winner());
+                    break;
+                }
+            }
+            println!(
+                "Move played by AI: {} (i.e. {}, {})",
+                move_found,
+                move_found / size,
+                move_found % size
+            );
+            ttt.play(&move_found, false);
         }
     }
 }
