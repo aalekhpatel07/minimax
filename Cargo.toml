@@ -1,12 +1,12 @@
 [package]
 name = "minimax-alpha-beta"
-version = "0.1.2"
+version = "0.1.3"
 authors = ["Aalekh Patel <aalekh.gwpeck.7998@icloud.com>"]
 edition = "2018"
 license = "MIT"
 description = "An implementation of Alpha-Beta Pruning + Minimax Algorithm for arbitrary two player minimax style games like Chess, Go, TicTacToe, etc."
 homepage = "https://www.github.com/aalekhpatel07/minimax"
-documentation = "https://www.github.com/aalekhpatel07/minimax"
+documentation = "https://docs.rs/minimax-alpha-beta/0.1.3/minimax_alpha_beta/"
 repository = "https://www.github.com/aalekhpatel07/minimax.git"
 readme = "README.md"
 keywords = ["game", "game-ai", "Minimax", "alpha-beta-pruning", "efficient-minimax"]
