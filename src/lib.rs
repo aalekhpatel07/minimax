@@ -13,11 +13,14 @@
 /// # Examples
 ///
 /// ```
-/// let mut tic_tac_toe = minimax::tictactoe::TicTacToe::create_game(3, None, None, None);
+/// use minimax_alpha_beta::tictactoe::TicTacToe;
+/// let mut tic_tac_toe = TicTacToe::create_game(3, None, None, None);
 /// tic_tac_toe.print_board();
 /// assert_eq!(tic_tac_toe.size, 3);
 /// assert_eq!(tic_tac_toe.default_char, '-');
 /// ```
+mod tests;
+
 pub mod tictactoe {
     pub struct TicTacToe {
         pub board: Vec<char>,
