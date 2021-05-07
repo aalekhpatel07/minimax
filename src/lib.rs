@@ -21,7 +21,12 @@
 /// ```
 mod tests;
 
+/// Contains the concrete implementation of
+/// a TicTacToe game.
 pub mod tictactoe {
+
+    /// Contains basic data about a
+    /// TicTacToe game.
     pub struct TicTacToe {
         pub board: Vec<char>,
         pub size: usize,
@@ -30,7 +35,12 @@ pub mod tictactoe {
         pub minimizer: char,
     }
 
+    /// Implements all necessary
+    /// methods to operate a TicTacToe
+    /// game.
     impl TicTacToe {
+        /// Create a new game of TicTacToe
+        /// with a fresh board.
         pub fn create_game(
             size: usize,
             default_char: Option<char>,
@@ -48,6 +58,8 @@ pub mod tictactoe {
             }
         }
 
+        /// Pretty print a TicTacToe board
+        /// for visualizing a game state.
         pub fn print_board(&self) {
             for idx in 0..self.size {
                 let start = self.size * idx;
@@ -61,6 +73,8 @@ pub mod tictactoe {
             }
         }
 
+        /// Check the main and anti-diagonals
+        /// for a winner.
         pub fn check_diagonals(&self) -> char {
             let mut winner = self.default_char;
             if self.check_diagonal(self.maximizer, true)
@@ -75,7 +89,8 @@ pub mod tictactoe {
             winner
         }
 
-        pub(crate) fn check_rows(&self) -> char {
+        /// Check the rows of the grid for a winner.
+        pub fn check_rows(&self) -> char {
             let mut winner = self.default_char;
 
             for row in 0..self.size as usize {
@@ -90,6 +105,7 @@ pub mod tictactoe {
             winner
         }
 
+        /// Check the columns of the grid for a winner.
         pub fn check_cols(&self) -> char {
             let mut winner = self.default_char;
 
@@ -105,6 +121,7 @@ pub mod tictactoe {
             winner
         }
 
+        /// Check a given column if a given player has won.
         fn check_col(&self, ch: char, col_num: usize) -> bool {
             for row in 0..self.size as usize {
                 if self.board[self.size as usize * row + col_num] != ch {
@@ -114,6 +131,7 @@ pub mod tictactoe {
             true
         }
 
+        /// Check a given row if a given player has won.
         fn check_row(&self, ch: char, row_num: usize) -> bool {
             for col in 0..self.size as usize {
                 if self.board[self.size as usize * row_num + col] != ch {
@@ -122,6 +140,9 @@ pub mod tictactoe {
             }
             true
         }
+
+        /// Check the main and anti diagonals if a
+        /// given player has won.
         fn check_diagonal(&self, ch: char, diag: bool) -> bool {
             // main diagonal is represented by true.
             if diag {
@@ -146,34 +167,57 @@ pub mod tictactoe {
     }
 }
 
-/// Contains the behaviours for
-/// two player games.
-///
+/// Contains the necessary behaviours for
+/// two-player Minimax games.
 pub mod strategy {
 
+    /// Any two-player Minimax game must
+    /// have this behavior. In other words,
+    /// these functions should yield meaningful outputs
+    /// for any two-player games.
     pub trait Strategy {
         type Player;
         type Move;
         type Board;
 
+        /// Ability to statically evaluate the current game state.
         fn evaluate(&self) -> f64;
+        /// Identify a winner, if exists.
         fn get_winner(&self) -> Self::Player;
+        /// Identify if the game is tied.
         fn is_game_tied(&self) -> bool;
+        /// Identify if the game is in a completed state.
         fn is_game_complete(&self) -> bool;
+        /// Ability to produce a collection of playable legal moves
+        /// in the current position.
         fn get_available_moves(&self) -> Vec<Self::Move>;
+        /// Modify the game state by playing a given move.
         fn play(&mut self, mv: &Self::Move, maximizer: bool);
+        /// Modify the game state by resetting a given move.
         fn clear(&mut self, mv: &Self::Move);
+        /// Get the current state of the board.
         fn get_board(&self) -> &Self::Board;
+        /// Determine if a given move is valid.
         fn is_a_valid_move(&self, mv: &Self::Move) -> bool;
+        /// Ability to produce a sentinel (not-playable) move.
         fn get_a_sentinel_move(&self) -> Self::Move;
     }
 
+    /// The behaviour required of any
+    /// minimax game engine.
     pub trait AlphaBetaMiniMaxStrategy: Strategy {
+        /// The ability to get the best move
+        /// in the current state and for the
+        /// current player.
         fn get_best_move(
             &mut self,
             max_depth: i64,
             is_maximizing: bool,
         ) -> <Self as Strategy>::Move;
+
+        /// The ability to produce a best (good enough, sometimes)
+        /// evaluation score possible over all
+        /// possible moves at the current game state.
         fn minimax_score(
             &mut self,
             depth: i64,
@@ -185,14 +229,27 @@ pub mod strategy {
     }
 }
 
-pub mod body {
+/// Contains the concrete implementations
+/// for the game-playing strategic behaviour
+/// of TicTacToe.
+pub mod games {
 
     use crate::strategy::*;
     use crate::tictactoe::*;
 
+    /// Endow upon TicTacToe the ability to
+    /// play games.
     impl Strategy for TicTacToe {
+        /// The Player is a char.
+        /// Usually one of 'o', 'O', 'x', 'X', '-'.
         type Player = char;
+
+        /// The Move is a single number representing an
+        /// index of the Board vector, i.e. in range
+        /// `[0, (size * size) - 1]`.
         type Move = usize;
+
+        /// The Board is a single vector of length `size * size`.
         type Board = Vec<char>;
 
         fn evaluate(&self) -> f64 {
@@ -272,6 +329,10 @@ pub mod body {
     pub const INF: f64 = f64::INFINITY;
     pub const NEG_INF: f64 = f64::NEG_INFINITY;
 
+    /// Endow upon anything the ability to
+    /// use the AlphaBetaMiniMaxStrategy implementation
+    /// of the game engine as long as it understands
+    /// how to behave as Strategy.
     impl<T: Strategy> AlphaBetaMiniMaxStrategy for T {
         fn get_best_move(
             &mut self,
