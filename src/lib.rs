@@ -3,6 +3,7 @@
 //! Also, where possible, a parallel processing
 //! implementation is provided.
 
+mod drivers;
 /// Contains sruct and necessary implementations
 /// for `TicTacToe`: a popular two-player game
 /// where one player places a symbol - 'X' and another
@@ -20,7 +21,6 @@
 /// assert_eq!(tic_tac_toe.default_char, '-');
 /// ```
 mod tests;
-
 /// Contains the concrete implementation of
 /// a TicTacToe game.
 pub mod tictactoe {
