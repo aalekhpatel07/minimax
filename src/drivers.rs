@@ -1,4 +1,3 @@
-#![cfg(test)]
 /// Contains simple drivers for some
 /// of the games supported by the Minimax
 /// engine.
