@@ -18,6 +18,28 @@ The crate provides concrete implementations for TicTacToe, (note: other games ar
 
 Use the `TicTacToe::get_best_move(depth, player)` method to compute the best move in this position for this player.
 
+### To use a pre-written driver:
+
+```rust
+
+use minimax_alph_beta::drivers;
+
+fn main() {
+    let grid_size: usize = 3;
+    let search_depth: i64 = 6;
+
+    // Control the depth to trade running time and accuracy.
+    // The higher the depth the slower the compute and higher the accuracy.
+    // The lower the depth the faster the compute and lower the accuracy.
+    drivers::play_tic_tac_toe_against_computer_with_depth(grid_size, search_depth);
+
+    // Or simply use the default balance of `depth = 6`.
+    drivers::play_tic_tac_toe_against_computer(grid_size);
+}
+```
+
+### To write a driver yourself:
+
 ```rust
 use minimax_alpha_beta::tictactoe::{TicTacToe};
 use minimax_alpha_beta::strategy::*;
@@ -50,3 +72,81 @@ ttt.play(&best, true);
 ttt.print_board();
 
 ```
+
+### To use the engine for a completely new minimax game (e.g. chess):
+
+```rust
+
+use minimax_alpha_beta::strategy::{Strategy, AlphaBetaMiniMaxStrategy};
+
+/// Define the Chess structure.
+pub struct Chess {
+    /// The board could be represented by a vector of 64 characters.
+    pub board: Vec<char>,
+    /// The default char could be a '.'
+    pub default_char: char,
+    /// The maximizer is White.
+    pub maximizer: char,
+    /// The minimizer is Black.
+    pub minimizer: char,
+}
+
+// Implement any basic methods on Chess.
+// This should ideally allow us to work with
+// Chess at a very low level.
+
+impl Chess {
+    // ...
+}
+
+// You'll likely need to have a new struct
+// that represents a move in Chess.
+pub struct ChessMove {
+    // ...
+}
+
+// Implement all the higher level
+// methods on Chess. This should ideally
+// be compositions of the basic methods
+// in the default impl of Chess.
+
+impl Strategy for Chess {
+    // ...
+    type Move = ChessMove;
+    // ...
+}
+
+// Once Strategy is implemented for Chess, the Minimax engine should be ready to use!
+
+// Make sure there is a create_game in the default impl for Chess.
+// Then create a game with parameters as necessary.
+let mut chessboard = Chess::create_game()
+
+let search_depth: i64 = 6;
+
+// Play arbitrary number of moves depending on how've you defined it in the default impl.
+chessboard.play(&your_move, true);
+
+let best_move: ChessMove = chessboard.get_best_move(search_depth, true);
+
+chessboard.play(&best_move, true);
+chessboard.print_board();
+```
+
+## Show appreciation
+
+I enjoyed creating this and is one of my first excursions in Rust.
+If you found this library useful or maybe just cool, consider [awarding a star](https://www.github.com/aalekhpatel07/minimax).
+
+## Questions
+
+Please [create an issue](https://www.github.com/aalekhpatel07/minimax/issues).
+
+## Contribution
+
+All [pull requests](https://www.github.com/aalekhpatel07/minimax/pull) are welcome!
+
+
+## Contact
+
+Got any cool collaboration ideas? My github is [aalekhpatel07](https://www.github.com/aalekhpatel07) and you can reach me [here](mailto:itsme@aalekhpatel.com).
