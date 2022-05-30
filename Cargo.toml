@@ -1,6 +1,6 @@
 [package]
 name = "minimax-alpha-beta"
-version = "0.1.6"
+version = "0.1.7"
 authors = ["Aalekh Patel <aalekh.gwpeck.7998@icloud.com>"]
 edition = "2018"
 license = "MIT"
@@ -15,3 +15,7 @@ categories = ["algorithms", "mathematics"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+
+
+[profile.release]
+lto = "fat"
