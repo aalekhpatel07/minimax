@@ -52,8 +52,8 @@ impl<T: GameStrategy> AlphaBetaMiniMaxStrategy for T {
             let mut best_move_val: f64 = INF;
 
             for mv in self.get_available_moves() {
-                self.play(&mv, false);
-                let value = self.minimax_score(max_depth, true, alpha, beta, max_depth);
+                self.play(&mv, !is_maximizing);
+                let value = self.minimax_score(max_depth, is_maximizing, alpha, beta, max_depth);
                 self.clear(&mv);
                 if value <= best_move_val {
                     best_move_val = value;
@@ -66,8 +66,8 @@ impl<T: GameStrategy> AlphaBetaMiniMaxStrategy for T {
             let mut best_move_val: f64 = NEG_INF;
 
             for mv in self.get_available_moves() {
-                self.play(&mv, false);
-                let value = self.minimax_score(max_depth, false, alpha, beta, max_depth);
+                self.play(&mv, !is_maximizing);
+                let value = self.minimax_score(max_depth, is_maximizing, alpha, beta, max_depth);
                 self.clear(&mv);
                 if value >= best_move_val {
                     best_move_val = value;
@@ -96,12 +96,14 @@ impl<T: GameStrategy> AlphaBetaMiniMaxStrategy for T {
             for idx in avail {
                 self.play(&idx, true);
                 let score = self.minimax_score(depth - 1, false, alpha, beta, max_depth);
-                if score >= value {
-                    value = score;
-                }
-                if score >= alpha {
-                    alpha = score;
-                }
+                // if score >= value {
+                //     value = score;
+                // }
+                value = value.max(score);
+                alpha = alpha.max(score);
+                // if score >= alpha {
+                //     alpha = score;
+                // }
                 self.clear(&idx);
                 if beta <= alpha {
                     break;
@@ -116,12 +118,14 @@ impl<T: GameStrategy> AlphaBetaMiniMaxStrategy for T {
             for idx in avail {
                 self.play(&idx, false);
                 let score = self.minimax_score(depth - 1, true, alpha, beta, max_depth);
-                if score <= value {
-                    value = score;
-                }
-                if score <= beta {
-                    beta = score;
-                }
+                value = value.min(score);
+                beta = beta.min(score);
+                // if score <= value {
+                //     value = score;
+                // }
+                // if score <= beta {
+                //     beta = score;
+                // }
                 self.clear(&idx);
                 if beta <= alpha {
                     break;

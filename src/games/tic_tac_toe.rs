@@ -1,5 +1,8 @@
+use std::fmt::Display;
+
 use crate::strategy::game_strategy::GameStrategy;
 
+#[derive(Debug, Clone)]
 pub struct TicTacToe {
     pub board: Vec<char>,
     pub size: usize,
@@ -8,41 +11,60 @@ pub struct TicTacToe {
     pub minimizer: char,
 }
 
-/// Implements all necessary
-/// methods to operate a TicTacToe
-/// game.
-impl TicTacToe {
-    /// Create a new game of TicTacToe
-    /// with a fresh board.
-    pub fn create_game(
-        size: usize,
-        default_char: Option<char>,
-        maximizer: Option<char>,
-        minimizer: Option<char>,
-    ) -> TicTacToe {
-        let board: Vec<char> = vec![default_char.unwrap_or('-'); (size * size) as usize];
-
-        TicTacToe {
-            size,
-            board,
-            maximizer: maximizer.unwrap_or('o'),
-            minimizer: minimizer.unwrap_or('x'),
-            default_char: default_char.unwrap_or('-'),
-        }
-    }
-
-    /// Pretty print a TicTacToe board
-    /// for visualizing a game state.
-    pub fn print_board(&self) {
+impl Display for TicTacToe {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         for idx in 0..self.size {
             let start = self.size * idx;
             let end = self.size * (idx + 1);
             let sub: &[char] = &self.board[start as usize..end as usize];
 
             for &x in sub.iter() {
-                print!("{}", x);
+                write!(f, "{}", x)?;
             }
-            println!()
+            writeln!(f)?;
+        }
+        Ok(())
+    }
+}
+
+impl Default for TicTacToe {
+    fn default() -> Self {
+        TicTacToe::new(3)
+    }
+}
+
+/// Implements all necessary
+/// methods to operate a TicTacToe
+/// game.
+impl TicTacToe {
+
+    pub fn new(size: usize) -> Self {
+        let board: Vec<char> = vec!['-'; (size * size) as usize];
+        Self {
+            board,
+            size,
+            default_char: '-',
+            maximizer: 'o',
+            minimizer: 'x'
+        }
+    }
+
+    pub fn with_player_1(self, character: char) -> Self {
+        Self {
+            maximizer: character,
+            ..self
+        }
+    }
+    pub fn with_player_2(self, character: char) -> Self {
+        Self {
+            minimizer: character,
+            ..self
+        }
+    }
+    pub fn with_default_char(self, character: char) -> Self {
+        Self {
+            default_char: character,
+            ..self
         }
     }
 
@@ -225,5 +247,40 @@ impl GameStrategy for TicTacToe {
 
     fn get_a_sentinel_move(&self) -> Self::Move {
         self.size * self.size + 1
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::strategy::alpha_beta_minimax::AlphaBetaMiniMaxStrategy;
+
+    #[test]
+    fn best_move_in_given_3_by_3() {
+        let mut ttt = 
+            TicTacToe::new(3)
+            .with_player_1('o')
+            .with_player_2('x')
+            .with_default_char('-');
+    
+        ttt.play(&8, true);
+        ttt.play(&7, false);
+        ttt.play(&5, true);
+
+        assert_eq!(ttt.get_best_move(9, false), 2);
+    }
+
+    #[test]
+    fn test_should_always_tie_a_3_by_3_after_9_moves_at_depth_9() {
+        let mut ttt = TicTacToe::new(3);
+        for move_number in 0..=8 {
+            let is_maximising = move_number%2 == 0;
+            let i = ttt.get_best_move(9, is_maximising);
+            ttt.play(&i, is_maximising);
+            println!("{}", ttt);
+            // ttt.print_board();
+        }
+        assert!(ttt.is_game_complete());
+        assert!(ttt.is_game_tied());
     }
 }

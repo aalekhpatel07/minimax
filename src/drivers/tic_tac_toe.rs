@@ -21,10 +21,9 @@ pub fn play_tic_tac_toe_against_computer(size: usize) {
 /// The higher the depth, the longer it takes and
 /// the more accurately the engine performs.
 pub fn play_tic_tac_toe_against_computer_with_depth(size: usize, depth: i64) {
-    let mut ttt = TicTacToe::create_game(size, None, None, None);
+    let mut ttt = TicTacToe::new(size);
     loop {
-        println!("Board:\n");
-        ttt.print_board();
+        println!("Board:\n{}", ttt);
         println!("\n");
 
         if ttt.is_game_complete() {
