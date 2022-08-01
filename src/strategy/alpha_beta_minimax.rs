@@ -94,16 +94,12 @@ impl<T: GameStrategy> AlphaBetaMiniMaxStrategy for T {
         if is_maximizing {
             let mut value = NEG_INF;
             for idx in avail {
-                self.play(&idx, true);
-                let score = self.minimax_score(depth - 1, false, alpha, beta, max_depth);
-                // if score >= value {
-                //     value = score;
-                // }
+                self.play(&idx, is_maximizing);
+                let score = self.minimax_score(depth - 1, !is_maximizing, alpha, beta, max_depth);
+                
                 value = value.max(score);
                 alpha = alpha.max(score);
-                // if score >= alpha {
-                //     alpha = score;
-                // }
+
                 self.clear(&idx);
                 if beta <= alpha {
                     break;
@@ -116,16 +112,12 @@ impl<T: GameStrategy> AlphaBetaMiniMaxStrategy for T {
         } else {
             let mut value = INF;
             for idx in avail {
-                self.play(&idx, false);
-                let score = self.minimax_score(depth - 1, true, alpha, beta, max_depth);
+                self.play(&idx, is_maximizing);
+                let score = self.minimax_score(depth - 1, !is_maximizing, alpha, beta, max_depth);
+                
                 value = value.min(score);
                 beta = beta.min(score);
-                // if score <= value {
-                //     value = score;
-                // }
-                // if score <= beta {
-                //     beta = score;
-                // }
+
                 self.clear(&idx);
                 if beta <= alpha {
                     break;
