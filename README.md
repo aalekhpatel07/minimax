@@ -14,6 +14,41 @@ There is a caveat, in that, the minimax algorithm is too slow (since it explores
 
 ## Usage
 
+### As a binary
+
+Install with:
+```sh
+cargo install minimax-alpha-beta
+```
+
+Get usage instructions with:
+```sh
+tic-tac-toe --help
+```
+```
+minimax-alpha-beta 0.2.0
+Aalekh Patel <aalekh.gwpeck.7998@icloud.com>
+Play a game of Tic Tac Toe with a computer opponent that uses the Alpha-Beta Minimax Engine.
+
+USAGE:
+    tic-tac-toe [OPTIONS]
+
+OPTIONS:
+        --depth <DEPTH>    The depth of the search [default: 9]
+    -h, --help             Print help information
+        --size <SIZE>      The size of the board [default: 3]
+    -V, --version          Print version information
+```
+
+For example, to play a regular 3x3 tic-tac-toe game just use `tic-tac-toe`.
+
+Otherwise to play a 6x6 tic-tac-toe game with search depth of 5, use
+```sh
+tic-tac-toe --depth 5 --size 6
+```
+
+### As a library
+
 The crate provides concrete implementations for TicTacToe, (note: other games are in works).
 
 Use the `TicTacToe::get_best_move(depth, player)` method to compute the best move in this position for this player.
