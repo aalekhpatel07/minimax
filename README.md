@@ -76,10 +76,10 @@ fn main() {
 ### To write a driver yourself:
 
 ```rust
-use minimax_alpha_beta::tictactoe::{TicTacToe};
-use minimax_alpha_beta::strategy::*;
+use minimax_alpha_beta::games::tic_tac_toe::TicTacToe;
+use minimax_alpha_beta::strategy::{game_strategy::GameStrategy, alpha_beta_minimax::AlphaBetaMinimaxStrategy};
 
-let mut ttt = TicTacToe::create_game(3, None, None, None);
+let mut ttt = TicTacToe::new();
 ttt.print_board();
 
 // The first argument takes a reference to the move position.
@@ -112,7 +112,7 @@ ttt.print_board();
 
 ```rust
 
-use minimax_alpha_beta::strategy::{Strategy, AlphaBetaMiniMaxStrategy};
+use minimax_alpha_beta::strategy::{game_strategy::GameStrategy, alpha_beta_minimax::AlphaBetaMiniMaxStrategy};
 
 /// Define the Chess structure.
 pub struct Chess {
