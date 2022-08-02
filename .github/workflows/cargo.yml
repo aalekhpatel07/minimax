@@ -1,0 +1,41 @@
+name: Cargo (full)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: aalekhpatel07/rust:1.0
+      options: --user root --security-opt seccomp=unconfined
+    steps:
+    - name: Checkout repository.
+      uses: actions/checkout@v3
+    - name: Run tests
+      run: cargo nextest run --release --verbose
+    - name: Generate test coverage report.
+      run: cargo tarpaulin -o Html --output-dir ./target/tarpaulin
+    - name: Run clippy
+      run: cargo clippy --no-deps --fix
+    - name: Build the project.
+      run: |
+        cargo build --release
+    - name: Archive production build.
+      uses: actions/upload-artifact@v3
+      with:
+        name: production-static-files
+        path: |
+          target/release/tic-tac-toe
+    - name: Archive code coverage results.
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-coverage-report
+        path: |
+          target/tarpaulin
