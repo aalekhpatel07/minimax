@@ -37,7 +37,6 @@ impl Default for TicTacToe {
 /// methods to operate a TicTacToe
 /// game.
 impl TicTacToe {
-
     pub fn new(size: usize) -> Self {
         let board: Vec<char> = vec!['-'; (size * size) as usize];
         Self {
@@ -45,7 +44,7 @@ impl TicTacToe {
             size,
             default_char: '-',
             maximizer: 'o',
-            minimizer: 'x'
+            minimizer: 'x',
         }
     }
 
@@ -72,9 +71,7 @@ impl TicTacToe {
     /// for a winner.
     pub fn check_diagonals(&self) -> char {
         let mut winner = self.default_char;
-        if self.check_diagonal(self.maximizer, true)
-            || self.check_diagonal(self.maximizer, false)
-        {
+        if self.check_diagonal(self.maximizer, true) || self.check_diagonal(self.maximizer, false) {
             winner = self.maximizer
         } else if self.check_diagonal(self.minimizer, true)
             || self.check_diagonal(self.minimizer, false)
@@ -149,8 +146,7 @@ impl TicTacToe {
             true
         } else {
             for idx in 0..self.size as usize {
-                if self.board
-                    [(self.size as usize * (self.size as usize - 1 - idx as usize)) + idx]
+                if self.board[(self.size as usize * (self.size as usize - 1 - idx as usize)) + idx]
                     != ch
                 {
                     return false;
@@ -257,12 +253,11 @@ mod tests {
 
     #[test]
     fn best_move_in_given_3_by_3() {
-        let mut ttt = 
-            TicTacToe::new(3)
+        let mut ttt = TicTacToe::new(3)
             .with_player_1('o')
             .with_player_2('x')
             .with_default_char('-');
-    
+
         ttt.play(&8, true);
         ttt.play(&7, false);
         ttt.play(&5, true);
@@ -274,7 +269,7 @@ mod tests {
     fn test_should_always_tie_a_3_by_3_after_9_moves_at_depth_9() {
         let mut ttt = TicTacToe::new(3);
         for move_number in 0..=8 {
-            let is_maximising = move_number%2 == 0;
+            let is_maximising = move_number % 2 == 0;
             let i = ttt.get_best_move(9, is_maximising);
             ttt.play(&i, is_maximising);
             println!("{}", ttt);

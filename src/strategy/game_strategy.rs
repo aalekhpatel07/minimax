@@ -3,13 +3,11 @@
 /// these functions should yield meaningful outputs
 /// for any two-player games.
 
-
 pub enum GameResult {
     Player1Win,
     Player2Win,
-    Draw
+    Draw,
 }
-
 
 pub trait GameStrategy {
     type Player;

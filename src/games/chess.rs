@@ -1,6 +1,6 @@
-use std::ops::{Deref, DerefMut};
 use crate::strategy::game_strategy::GameStrategy;
 use anyhow::{bail, Result};
+use std::ops::{Deref, DerefMut};
 
 #[cfg(feature = "chess")]
 pub use shakmaty::Chess as ShakmatyChess;
@@ -9,14 +9,14 @@ use shakmaty::Position;
 #[derive(Debug, Clone)]
 pub struct Chess {
     pub inner: ShakmatyChess,
-    pub moves_played: shakmaty::MoveList
+    pub moves_played: shakmaty::MoveList,
 }
 
 impl Default for Chess {
     fn default() -> Self {
         Self {
             inner: ShakmatyChess::default(),
-            moves_played: shakmaty::MoveList::default()
+            moves_played: shakmaty::MoveList::default(),
         }
     }
 }
@@ -36,16 +36,15 @@ impl DerefMut for Chess {
 }
 
 impl Chess {
-
     pub fn new() -> Self {
         Self::default()
     }
 
-    fn _undo(&self, _move: shakmaty::Move) -> Result<()>{
+    fn _undo(&self, _move: shakmaty::Move) -> Result<()> {
         todo!("Implement undo for Chess moves.");
     }
 
-    pub fn undo(&mut self) -> Result<()>{
+    pub fn undo(&mut self) -> Result<()> {
         if let Some(prev_move) = self.moves_played.pop() {
             self._undo(prev_move)
         } else {
@@ -97,23 +96,22 @@ impl GameStrategy for Chess {
     fn clear(&mut self, mv: &Self::Move) {
         if mv.is_none() {
             panic!("Invalid move. Sentinel?");
-        }   
+        }
         let prev_move = self.moves_played.pop();
 
         if prev_move.is_none() {
             panic!("Invalid move. Sentinel?");
         }
         let _mv = prev_move.unwrap();
-        self._undo(_mv.clone()).expect(&format!("Couldn't undo move: {:#?}", _mv));
-
+        self._undo(_mv.clone())
+            .expect(&format!("Couldn't undo move: {:#?}", _mv));
     }
 
     fn get_available_moves(&self) -> Vec<Self::Move> {
-        self
-        .legal_moves()
-        .iter()
-        .map(|mv| Some(mv.clone()))
-        .collect()
+        self.legal_moves()
+            .iter()
+            .map(|mv| Some(mv.clone()))
+            .collect()
     }
 
     fn get_board(&self) -> &Self::Board {
@@ -123,7 +121,7 @@ impl GameStrategy for Chess {
         if let Some(outcome) = self.outcome() {
             match outcome {
                 shakmaty::Outcome::Draw => None,
-                shakmaty::Outcome::Decisive { winner } => Some(winner)
+                shakmaty::Outcome::Decisive { winner } => Some(winner),
             }
         } else {
             None
@@ -138,20 +136,21 @@ impl GameStrategy for Chess {
         if let Some(outcome) = self.outcome() {
             match outcome {
                 shakmaty::Outcome::Draw => true,
-                _ => false
+                _ => false,
             }
         } else {
             false
         }
     }
-
 }
 
 #[cfg(test)]
 pub mod tests {
     pub use super::Chess;
     pub use crate::strategy::game_strategy::GameStrategy;
-    use shakmaty::{Chess as ChessGame, Square, Piece, Color, Role, Position, Setup, FromSetup, CastlingMode};
+    use shakmaty::{
+        CastlingMode, Chess as ChessGame, Color, FromSetup, Piece, Position, Role, Setup, Square,
+    };
 
     #[test]
     fn test_chess_new() {
@@ -179,10 +178,22 @@ pub mod tests {
         let mut chess_setup = Setup::default();
 
         let mut board = chess_setup.board;
-        board.set_piece_at(Square::E4, Piece { color: Color::White, role: Role::Pawn });
+        board.set_piece_at(
+            Square::E4,
+            Piece {
+                color: Color::White,
+                role: Role::Pawn,
+            },
+        );
         board.remove_piece_at(Square::E2).unwrap();
         board.remove_piece_at(Square::D7).unwrap();
-        board.set_piece_at(Square::D5, Piece { color: Color::Black, role: Role::Pawn });
+        board.set_piece_at(
+            Square::D5,
+            Piece {
+                color: Color::Black,
+                role: Role::Pawn,
+            },
+        );
 
         chess_setup.board = board;
 
@@ -192,5 +203,4 @@ pub mod tests {
         assert_eq!(moves.len(), 1);
         // println!("{moves:#?}");
     }
-
 }

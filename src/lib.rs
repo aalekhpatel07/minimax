@@ -3,6 +3,7 @@
 //! Also, where possible, a parallel processing
 //! implementation is provided.
 
+mod drivers;
 /// Contains sruct and necessary implementations
 /// for `TicTacToe`: a popular two-player game
 /// where one player places a symbol - 'X' and another
@@ -22,6 +23,5 @@
 // mod tests;
 pub mod games;
 pub mod strategy;
-mod drivers;
 
 pub use drivers::*;

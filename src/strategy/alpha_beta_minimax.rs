@@ -3,7 +3,6 @@ use crate::strategy::game_strategy::GameStrategy;
 pub const INF: f64 = f64::INFINITY;
 pub const NEG_INF: f64 = f64::NEG_INFINITY;
 
-
 /// The behaviour required of any
 /// minimax game engine.
 pub trait AlphaBetaMiniMaxStrategy: GameStrategy {
@@ -96,7 +95,7 @@ impl<T: GameStrategy> AlphaBetaMiniMaxStrategy for T {
             for idx in avail {
                 self.play(&idx, is_maximizing);
                 let score = self.minimax_score(depth - 1, !is_maximizing, alpha, beta, max_depth);
-                
+
                 value = value.max(score);
                 alpha = alpha.max(score);
 
@@ -114,7 +113,7 @@ impl<T: GameStrategy> AlphaBetaMiniMaxStrategy for T {
             for idx in avail {
                 self.play(&idx, is_maximizing);
                 let score = self.minimax_score(depth - 1, !is_maximizing, alpha, beta, max_depth);
-                
+
                 value = value.min(score);
                 beta = beta.min(score);
 
