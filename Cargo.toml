@@ -15,12 +15,19 @@ categories = ["algorithms", "mathematics"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [features]
-default = ["tictactoe", "chess"]
+default = ["tictactoe"]
 tictactoe = []
 chess = ["dep:shakmaty"]
 
 [dependencies]
 shakmaty = { version = "0.21.3", optional = true }
+anyhow = { version = "1.0.59" }
+clap = { version = "3.2.16", features = ["derive"]}
 
 [profile.release]
 lto = "fat"
+debug = false
+
+[[bin]]
+name = "tic-tac-toe"
+path = "src/main.rs"

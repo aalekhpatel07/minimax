@@ -2,7 +2,6 @@ use crate::games::TicTacToe;
 use crate::strategy::alpha_beta_minimax::AlphaBetaMiniMaxStrategy;
 use crate::strategy::game_strategy::GameStrategy;
 
-
 /// Read input.
 fn get_input() -> String {
     let mut buffer = String::new();

@@ -1,5 +1,6 @@
-use std::{ops::{Deref, DerefMut}, error::Error, io::ErrorKind};
+use std::ops::{Deref, DerefMut};
 use crate::strategy::game_strategy::GameStrategy;
+use anyhow::{bail, Result};
 
 #[cfg(feature = "chess")]
 pub use shakmaty::Chess as ShakmatyChess;
@@ -40,15 +41,15 @@ impl Chess {
         Self::default()
     }
 
-    fn _undo(&self, _move: shakmaty::Move) -> Result<(), Box<dyn Error>>{
+    fn _undo(&self, _move: shakmaty::Move) -> Result<()>{
         todo!("Implement undo for Chess moves.");
     }
 
-    pub fn undo(&mut self) -> Result<(), Box<dyn Error>>{
+    pub fn undo(&mut self) -> Result<()>{
         if let Some(prev_move) = self.moves_played.pop() {
             self._undo(prev_move)
         } else {
-            Err(Box::new(Error::new(ErrorKind::Other, "No moves to undo.")))
+            bail!("No moves to undo.");
         }
     }
 
@@ -103,7 +104,7 @@ impl GameStrategy for Chess {
             panic!("Invalid move. Sentinel?");
         }
         let _mv = prev_move.unwrap();
-        self._undo(_mv);
+        self._undo(_mv.clone()).expect(&format!("Couldn't undo move: {:#?}", _mv));
 
     }
 
@@ -150,7 +151,7 @@ impl GameStrategy for Chess {
 pub mod tests {
     pub use super::Chess;
     pub use crate::strategy::game_strategy::GameStrategy;
-    use shakmaty::{Chess as ChessGame, Board, Square, Piece, Color, Role, Position, Setup, FromSetup, CastlingMode};
+    use shakmaty::{Chess as ChessGame, Square, Piece, Color, Role, Position, Setup, FromSetup, CastlingMode};
 
     #[test]
     fn test_chess_new() {
@@ -160,13 +161,13 @@ pub mod tests {
 
     #[test]
     fn test_chess_evaluate() {
-        let mut chess = Chess::new();
+        let chess = Chess::new();
         assert_eq!(chess.evaluate(), 0.);
     }
 
     #[test]
     fn test_chess_available_moves() {
-        let mut chess = Chess::new();
+        let chess = Chess::new();
         let moves = chess.get_available_moves();
         assert_eq!(moves.len(), chess.legal_moves().len());
 
@@ -185,10 +186,11 @@ pub mod tests {
 
         chess_setup.board = board;
 
-        let mut chess = ChessGame::from_setup(chess_setup, CastlingMode::Standard).unwrap();
+        let chess = ChessGame::from_setup(chess_setup, CastlingMode::Standard).unwrap();
 
         let moves = chess.capture_moves();
-        println!("{moves:#?}");
+        assert_eq!(moves.len(), 1);
+        // println!("{moves:#?}");
     }
 
 }
