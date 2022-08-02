@@ -57,7 +57,7 @@ Use the `TicTacToe::get_best_move(depth, player)` method to compute the best mov
 
 ```rust
 
-use minimax_alph_beta::drivers;
+use minimax_alpha_beta::*;
 
 fn main() {
     let grid_size: usize = 3;
